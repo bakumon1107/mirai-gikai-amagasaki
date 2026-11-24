@@ -21,6 +21,12 @@ import {
   SAMPLE_RECENT_CONFERENCES,
   createSampleSessions,
 } from "../_data/sample-top-data";
+import {
+  PREVIEW_FRAME_SRCDOC,
+  isPreviewDocumentReady,
+  measurePreviewHeight,
+  syncHeadStyles,
+} from "../_utils/preview-frame";
 
 type HomeLayoutOption = "bills" | "archive";
 type SessionStateOption = "closed" | "in_session";
@@ -83,7 +89,7 @@ function PreviewViewportFrame({
 
     const setupDocument = () => {
       const doc = iframe.contentDocument;
-      if (!doc) return;
+      if (!isPreviewDocumentReady(doc)) return;
 
       doc.documentElement.lang = document.documentElement.lang || "ja";
       doc.documentElement.className = document.documentElement.className;
@@ -91,12 +97,7 @@ function PreviewViewportFrame({
       doc.body.style.margin = "0";
       doc.body.style.overflowX = "hidden";
 
-      doc.head.replaceChildren();
-      for (const node of document.querySelectorAll(
-        'link[rel="stylesheet"], style'
-      )) {
-        doc.head.appendChild(node.cloneNode(true));
-      }
+      syncHeadStyles(document, doc);
 
       let root = doc.getElementById("preview-root");
       if (!root) {
@@ -107,20 +108,28 @@ function PreviewViewportFrame({
       setMountNode(root);
     };
 
-    if (iframe.contentDocument?.readyState === "complete") {
-      setupDocument();
-    } else {
-      iframe.addEventListener("load", setupDocument, { once: true });
-      return () => iframe.removeEventListener("load", setupDocument);
-    }
+    iframe.addEventListener("load", setupDocument);
+    setupDocument();
+
+    const headObserver = new MutationObserver(() => {
+      const doc = iframe.contentDocument;
+      if (!isPreviewDocumentReady(doc)) return;
+      syncHeadStyles(document, doc);
+    });
+    headObserver.observe(document.head, { childList: true });
+
+    return () => {
+      iframe.removeEventListener("load", setupDocument);
+      headObserver.disconnect();
+      setMountNode(null);
+    };
   }, []);
 
   useEffect(() => {
     if (!mountNode) return;
 
     const updateHeight = () => {
-      const nextHeight = Math.max(mountNode.scrollHeight, 400);
-      setHeight(nextHeight);
+      setHeight(measurePreviewHeight(mountNode, 400));
     };
 
     updateHeight();
@@ -134,7 +143,7 @@ function PreviewViewportFrame({
       <iframe
         ref={iframeRef}
         title="トップページプレビュー"
-        srcDoc="<!doctype html><html><head></head><body></body></html>"
+        srcDoc={PREVIEW_FRAME_SRCDOC}
         style={{ height: `${height}px` }}
         className={cn(
           "w-full rounded-2xl border border-mirai-border bg-mirai-surface shadow-sm transition-all",
