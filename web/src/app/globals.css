@@ -107,32 +107,42 @@
   --color-mirai-progress-fill: #a9e89d;
 
   /*
-   * Gradient endpoints
-   * ★ 本家（team-mirai）と同じグラデーションは使用しないこと。
-   * 下記はニュートラルなプレースホルダーのため、fork 時に独自の配色へ変更する。
+   * Gradient endpoints（尼崎市版：あまがさき藍・藤ラベンダー系）
    * @see FORK_GUIDELINES.md 4. カラーテーマの変更
    */
-  --color-mirai-gradient-start: #9fc0d8;
-  --color-mirai-gradient-end: #cfe1ec;
+  --color-mirai-gradient-start: #b5ade8;
+  --color-mirai-gradient-end: #dcd8f7;
 
   /*
    * --- 議事録ベース UI（homeLayout: "archive"）用カラー・トークン（archive-*） ---
-   * 下記はニュートラルなプレースホルダー配色（スレートブルー系 --primary: #4f6d8c に調和）。
-   * fork 時に自地域のブランドカラーへ合わせて変更し、WCAG AA（4.5:1 以上）を満たす値に調整すること。
+   * 尼崎市版のブランドカラー（--primary: #4b3f8f）に調和し、WCAG AA（4.5:1 以上）を満たす配色。
    */
-  --color-archive-accent: #37506b; /* リンク・強調文字・バー塗り（白比 8.4:1） */
-  --color-archive-accent-hover: #283c52; /* hover（白比 11.2:1） */
-  --color-archive-accent-deep: #24364a; /* 淡色面上の濃い文字 */
-  --color-archive-pill-bg: #d4e2ee; /* ナビ現在地・状態ピル背景 */
-  --color-archive-pill-text: #1f3347; /* pill-bg 上の文字（9.6:1） */
-  --color-archive-hero: #eaf1f7; /* ヒーロー面 */
-  --color-archive-surface-tint: #f2f6fa; /* サブ面・ホバー・「いまここ」 */
-  --color-archive-surface-sub: #f6f4ee; /* 定例会カード等（ベージュ寄り） */
-  --color-archive-beige-text: #4a4336; /* mirai-surface-warm 上の文字 */
-  --color-archive-coral-bg: #fde2d6; /* テーマタイル差し色（アイコン面） */
-  --color-archive-coral-text: #7a2f14; /* テーマタイル差し色（アイコン文字） */
-  --color-archive-coral-tint: #fff4f0; /* テーマタイル差し色（タイル面） */
-  --color-archive-divider: #eae6dd; /* カード内区切り線 */
+  --color-archive-accent: #362c6e;
+  /* リンク・強調文字・バー塗り（白比 11.7:1） */
+  --color-archive-accent-hover: #261f52;
+  /* hover（白比 14.5:1） */
+  --color-archive-accent-deep: #231c4a;
+  /* 淡色面上の濃い文字 */
+  --color-archive-pill-bg: #e3dff7;
+  /* ナビ現在地・状態ピル背景 */
+  --color-archive-pill-text: #231c4a;
+  /* pill-bg 上の文字（11.5:1） */
+  --color-archive-hero: #eeecf9;
+  /* ヒーロー面 */
+  --color-archive-surface-tint: #f5f4fc;
+  /* サブ面・ホバー・「いまここ」 */
+  --color-archive-surface-sub: #f6f4ee;
+  /* 定例会カード等（ベージュ寄り） */
+  --color-archive-beige-text: #4a4336;
+  /* mirai-surface-warm 上の文字 */
+  --color-archive-coral-bg: #fde2d6;
+  /* テーマタイル差し色（アイコン面） */
+  --color-archive-coral-text: #7a2f14;
+  /* テーマタイル差し色（アイコン文字） */
+  --color-archive-coral-tint: #fff4f0;
+  /* テーマタイル差し色（タイル面） */
+  --color-archive-divider: #eae6dd;
+  /* カード内区切り線 */
 }
 
 :root {
@@ -143,15 +153,9 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  /*
-   * ★ primary カラーは本家（team-mirai）と同じ値を使用しないこと。
-   * 下記はニュートラルなプレースホルダーのため、fork 時に独自の配色へ変更する。
-   * 変更時は layout.tsx の themeColor と web/public/manifest.json の
-   * theme_color も合わせて更新すること。
-   * @see FORK_GUIDELINES.md 4. カラーテーマの変更
-   */
-  --primary: #4f6d8c;
-  --primary-accent: #37506b;
+  /* 尼崎市版ブランドカラー（あまがさき藍系） */
+  --primary: #4b3f8f;
+  --primary-accent: #362c6e;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -265,11 +269,9 @@
 
 @layer components {
   .bg-mirai-gradient {
-    background-image: linear-gradient(
-      to bottom right,
-      var(--color-mirai-gradient-start),
-      var(--color-mirai-gradient-end)
-    );
+    background-image: linear-gradient(to bottom right,
+        var(--color-mirai-gradient-start),
+        var(--color-mirai-gradient-end));
   }
 
   .bg-mirai-light-gradient {
@@ -277,22 +279,18 @@
   }
 
   .bg-mirai-white-fade {
-    background-image: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.3) 0%,
-      rgb(255, 255, 255) 62%
-    );
+    background-image: linear-gradient(180deg,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgb(255, 255, 255) 62%);
   }
 
   .border-mirai-gradient {
     border: 2px solid transparent;
     background-image:
       linear-gradient(white, white),
-      linear-gradient(
-        -45deg,
+      linear-gradient(-45deg,
         var(--color-mirai-gradient-end) 0%,
-        var(--color-mirai-gradient-start) 100%
-      );
+        var(--color-mirai-gradient-start) 100%);
     background-origin: border-box;
     background-clip: padding-box, border-box;
   }
@@ -310,6 +308,7 @@
 
 /* カスタムアニメーション */
 @keyframes shake {
+
   0%,
   100% {
     transform: translateX(0);
@@ -332,6 +331,7 @@
 }
 
 @keyframes bounce-gentle {
+
   0%,
   100% {
     transform: translateY(0);

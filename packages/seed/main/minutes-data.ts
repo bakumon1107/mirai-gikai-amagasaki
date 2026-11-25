@@ -1,10 +1,8 @@
 /**
- * 議事録ベースのアーカイブ（一般質問・委員会議事録・首長の記者会見）の開発用シードデータ
+ * 議事録ベースのアーカイブ（一般質問・委員会議事録・首長の記者会見）の開発用シードデータ（尼崎市版）
  *
- * data.ts と同じく、架空の自治体「サンプル市」を題材にしたダミーデータです。
- * 議員名・職員名・数値・事業名はすべて架空のもので、実在の人物・自治体とは関係ありません。
- *
- * fork 時は、自地域の会議録から取り込んだデータに差し替えてください。
+ * 尼崎市議会の質問通告テーマ・常任委員会構成および市長定例記者会見の公開情報をもとに構成した
+ * 開発・レイアウト検証用データです。発言録本文は会議録検索システムから取り込む前のサンプルです。
  */
 
 import type { Database } from "@mirai-gikai/supabase";
@@ -31,12 +29,15 @@ type Speech = {
   text: string;
 };
 
+const AMAGASAKI_MINUTES_URL =
+  "https://ssp.kaigiroku.net/tenant/amagasaki/pg/index.html";
+
 // ============================================================
 // 一般質問・代表質問
 // ============================================================
 
 /**
- * @param sessionIds data.ts の councilSessions の順（[0]=令和7年第4回, [1]=令和7年第3回）で挿入した ID
+ * @param sessionIds data.ts の councilSessions の順（[0]=令和8年9月第8回, [1]=令和8年6月第6回）で挿入した ID
  */
 export function createGeneralQuestions(
   sessionIds: string[]
@@ -50,138 +51,136 @@ export function createGeneralQuestions(
     {
       council_session_id: current,
       question_type: "representative",
-      questioner_name: "見本 太郎",
-      questioner_party: "みらい",
-      questioner_number: 12,
+      questioner_name: "市議会議員A（開発用サンプル）",
+      questioner_party: "公明党",
+      questioner_number: 1,
       session_day: 1,
       question_order: 1,
       summary:
-        "会派を代表し、来年度の予算編成の考え方と、子育て世帯への支援の拡充について質した。",
+        "市長公約の進捗と財政環境、学校体育館の空調整備を含む防災・減災対策の強化について質した。",
       topics: [
         {
-          title: "来年度の予算、何に力を入れる？",
+          title: "学校体育館のエアコン整備、いつまでに進む？",
           question_summary:
-            "物価高が続く中で、来年度の予算編成で何を優先するのかを質した。",
+            "避難所となる学校体育館の空調整備スケジュールと、未整備校での暑さ対策を質した。",
           answer_summary:
-            "市長は、子育て支援と防災を重点とし、既存事業の見直しで財源を確保すると答弁した。",
-          answerer_role: "市長",
-          answerer_name: "仮野 一郎",
+            "教育委員会は、避難所機能も踏まえて計画的に整備を進め、未整備校ではスポットクーラー等で代替措置を講じると答弁した。",
+          answerer_role: "教育長",
+          answerer_name: "",
         },
         {
-          title: "保育園の待機児童、ゼロは続く？",
+          title: "本市の財政環境とまちづくりの方向性は？",
           question_summary:
-            "待機児童ゼロを今後も維持できるのか、保育士の確保策とあわせて質した。",
+            "物価高や公共施設の老朽化が進む中での財政運営とまちづくりの優先順位を質した。",
           answer_summary:
-            "こども未来局長は、保育士の家賃補助を続け、来年度は定員を120人増やす計画だと答弁した。",
-          answerer_role: "こども未来局長",
-          answerer_name: "試験 花子",
+            "市長は、健全な財政規律を保ちつつ、子育て・防災・生活空間の環境改善に重点配分すると答弁した。",
+          answerer_role: "市長",
+          answerer_name: "松本 眞",
         },
       ],
       raw_text:
-        "○見本太郎議員　会派を代表して質問いたします。まず、来年度の予算編成についてお伺いします。……",
+        "○市議会議員A　防災・減災対策の強化と学校体育館の空調整備について伺います。（開発用サンプル）",
       answer_raw_text:
-        "○仮野一郎市長　見本議員のご質問にお答えいたします。来年度の予算編成にあたりましては……",
-      source_url: "https://www.example.lg.jp/gikai/kaigiroku/",
+        "○松本眞市長　ご質問にお答えいたします。防災力の強化と健全な財政運営の両立に取り組んでまいります。（開発用サンプル）",
+      source_url: AMAGASAKI_MINUTES_URL,
       publish_status: "published",
     },
     {
       council_session_id: current,
       question_type: "general",
-      questioner_name: "例示 次郎",
-      questioner_party: "自民党",
-      questioner_number: 5,
+      questioner_name: "市議会議員B（開発用サンプル）",
+      questioner_party: "蒼風会",
+      questioner_number: 2,
       session_day: 2,
       question_order: 1,
       summary:
-        "通学路の安全対策と、駅前の放置自転車の対策について質した。",
+        "聴覚障害者への支援拡充と、手話通訳者の育成・手話リンクサービスの導入について質した。",
       topics: [
         {
-          title: "通学路の危ない交差点、いつ直る？",
+          title: "手話通訳者の育成や手話リンクサービスの導入は？",
           question_summary:
-            "保護者から要望の多い交差点に、信号機や歩道をいつ整備するのかを質した。",
+            "聴覚障害者が市役所手続きを円滑に行えるよう、手話通訳者の育成支援や遠隔手話サービスの導入状況を質した。",
           answer_summary:
-            "道路局長は、今年度中に3か所でガードレールを設置し、信号機は警察と協議中だと答弁した。",
-          answerer_role: "道路局長",
-          answerer_name: "模擬 三郎",
-        },
-        {
-          title: "駅前の放置自転車、減らせる？",
-          question_summary:
-            "駅前の放置自転車が増えている理由と、駐輪場の整備計画を質した。",
-          answer_summary:
-            "道路局長は、撤去を月2回に増やし、来年度に駐輪場を300台分増設すると答弁した。",
-          answerer_role: "道路局長",
-          answerer_name: "模擬 三郎",
+            "健康福祉局は、手話奉仕員養成講座の充実を図るとともに、窓口での遠隔手話通訳の活用拡大を検討すると答弁した。",
+          answerer_role: "健康福祉局長",
+          answerer_name: "",
         },
       ],
-      raw_text: "○例示次郎議員　通学路の安全対策についてお伺いします。……",
-      answer_raw_text: "○模擬三郎道路局長　お答えいたします。……",
-      source_url: "https://www.example.lg.jp/gikai/kaigiroku/",
+      raw_text:
+        "○市議会議員B　聴覚障害者への支援拡充と手話通訳者の育成について伺います。（開発用サンプル）",
+      answer_raw_text:
+        "○健康福祉局長　お答えいたします。関係団体と連携しながら支援体制の充実に努めます。（開発用サンプル）",
+      source_url: AMAGASAKI_MINUTES_URL,
       publish_status: "published",
     },
     {
       council_session_id: current,
       question_type: "general",
-      questioner_name: "仮定 さくら",
-      questioner_party: "公明党",
-      questioner_number: 21,
+      questioner_name: "市議会議員C（開発用サンプル）",
+      questioner_party: "日本維新の会",
+      questioner_number: 3,
       session_day: 2,
       question_order: 2,
-      summary: "高齢者の移動支援と、地域の見守り体制について質した。",
+      summary: "在宅・車中泊避難者への支援体制と避難所環境の格差解消について質した。",
       topics: [
         {
-          title: "免許を返したあとの移動手段は？",
+          title: "避難所の環境整備（TKB48）と在宅避難者支援は？",
           question_summary:
-            "運転免許を返納した高齢者が、通院や買い物にどう移動できるのかを質した。",
+            "災害時のトイレ・キッチン・ベッド整備と、在宅避難者への物資・情報提供体制を質した。",
           answer_summary:
-            "健康福祉局長（試行 四郎）・市長（仮野 一郎）は、乗合タクシーの対象地区を来年度に2地区から5地区へ広げると答弁した。",
-          answerer_role: "健康福祉局長（試行 四郎）・市長（仮野 一郎）",
+            "危機管理安全局は、災害対応車両の活用や地域防災組織との連携により避難所と在宅双方の支援を強化すると答弁した。",
+          answerer_role: "危機管理安全局長",
           answerer_name: "",
         },
       ],
-      raw_text: "○仮定さくら議員　高齢者の移動支援についてお伺いします。……",
-      answer_raw_text: "○試行四郎健康福祉局長　お答えいたします。……",
-      source_url: "https://www.example.lg.jp/gikai/kaigiroku/",
+      raw_text:
+        "○市議会議員C　避難所の環境整備と在宅避難者支援について伺います。（開発用サンプル）",
+      answer_raw_text:
+        "○危機管理安全局長　お答えいたします。災害関連死を防ぐための体制整備を進めます。（開発用サンプル）",
+      source_url: AMAGASAKI_MINUTES_URL,
       publish_status: "published",
     },
     {
       council_session_id: previous,
       question_type: "general",
-      questioner_name: "見本 太郎",
-      questioner_party: "みらい",
-      questioner_number: 12,
+      questioner_name: "市議会議員D（開発用サンプル）",
+      questioner_party: "市民グリーンクラブ",
+      questioner_number: 4,
       session_day: 1,
       question_order: 1,
-      summary: "公共施設の老朽化と、使われていない施設の活用について質した。",
+      summary:
+        "大井戸公園への新図書館整備と周辺地域の利便性・景観への配慮について質した。",
       topics: [
         {
-          title: "古くなった市民センター、建て替える？",
+          title: "大井戸公園の新図書館整備、地域の声はどう反映する？",
           question_summary:
-            "築40年を超える市民センターの建て替えか改修かの方針を質した。",
+            "北図書館の移転再編にあたり、公園利用や周辺道路の安全性について地域住民の意見をどう反映するかを質した。",
           answer_summary:
-            "総務局長は、利用状況を調べたうえで来年度中に方針を決めると答弁した。",
-          answerer_role: "総務局長",
-          answerer_name: "例題 五郎",
+            "資産統括局は、地域説明会やワークショップの意見を踏まえ、公園と一体となった利用しやすい整備を進めると答弁した。",
+          answerer_role: "資産統括局長",
+          answerer_name: "",
         },
       ],
-      raw_text: "○見本太郎議員　公共施設の老朽化についてお伺いします。……",
-      answer_raw_text: "○例題五郎総務局長　お答えいたします。……",
-      source_url: "https://www.example.lg.jp/gikai/kaigiroku/",
+      raw_text:
+        "○市議会議員D　大井戸公園内での新図書館整備について伺います。（開発用サンプル）",
+      answer_raw_text:
+        "○資産統括局長　お答えいたします。地域の皆さまの声を丁寧に伺いながら進めてまいります。（開発用サンプル）",
+      source_url: AMAGASAKI_MINUTES_URL,
       publish_status: "published",
     },
     {
       // 下書き（公開されないことの確認用）
       council_session_id: current,
       question_type: "general",
-      questioner_name: "例示 次郎",
-      questioner_party: "自民党",
+      questioner_name: "市議会議員E（開発用サンプル）",
+      questioner_party: "青雲の会",
       questioner_number: 5,
       session_day: 3,
       question_order: 1,
       summary: null,
       topics: [],
-      raw_text: "○例示次郎議員　（要約前の下書き）……",
-      source_url: "https://www.example.lg.jp/gikai/kaigiroku/",
+      raw_text: "○市議会議員E　（要約前の下書きサンプル）……",
+      source_url: AMAGASAKI_MINUTES_URL,
       publish_status: "draft",
     },
   ];
@@ -200,7 +199,7 @@ function buildSpeeches(
       voiceNo: 1,
       speakerLabel: `${chair}委員長`,
       speakerType: "chairperson",
-      text: "ただいまから委員会を開会いたします。本日は所管事務の報告を受けた後、質疑を行います。",
+      text: "ただいまから委員会を開会いたします。本日は付託議案および所管事務について審査・質疑を行います。",
     },
   ];
   for (const pair of pairs) {
@@ -226,72 +225,74 @@ function buildSpeeches(
   return speeches;
 }
 
-const bunkyoSpeeches = buildSpeeches("見本", [
+const bunkyoSpeeches = buildSpeeches("文教委員会", [
   {
-    member: "例示",
-    question: "放課後児童クラブの利用希望が増えていると聞きますが、受け入れの状況はいかがですか。",
-    executive: "こども未来局長",
-    answer: "今年度は申込みが前年より約200人増えましたが、教室の活用で全員を受け入れています。",
+    member: "A",
+    question:
+      "園田南小学校の校舎増築工事について、工事期間中の児童の安全確保はどう進めますか。",
+    executive: "教育委員会事務局",
+    answer:
+      "仮囲いの徹底や工事車両の動線分離を行い、登下校時間帯の搬入制限と誘導員配置で安全を確保します。",
   },
   {
-    member: "仮定",
-    question: "指導員の確保は追いついているのでしょうか。",
-    executive: "こども未来局長",
-    answer: "時給を50円引き上げ、募集を年2回から4回に増やして確保に努めています。",
+    member: "B",
+    question:
+      "増築後の普通教室数と給食提供数の見通しは十分でしょうか。",
+    executive: "教育委員会事務局",
+    answer:
+      "今後の児童数推計に基づき必要な教室数と給食対応能力を確保できる規模で計画しています。",
   },
   {
-    member: "見本",
-    question: "夏休み中の昼食の提供について、保護者からの要望はどう受け止めていますか。",
-    executive: "こども未来局長",
-    answer: "来年の夏休みに3か所で試行し、効果を確かめたうえで広げるか判断します。",
+    member: "C",
+    question:
+      "大庄健康ふれあい体育館の新築工事とあわせた地域利用の考え方をお聞かせください。",
+    executive: "教育委員会事務局",
+    answer:
+      "学校利用と地域のスポーツ・健康づくり利用の双方に配慮し、運用ルールを整備してまいります。",
   },
   {
-    member: "例示",
-    question: "学校の体育館への空調の設置は、いつまでに終わりますか。",
-    executive: "教育次長",
-    answer: "避難所としての役割もあるため、令和9年度までに全校で設置を終える計画です。",
-  },
-  {
-    member: "仮定",
-    question: "設置の順番はどう決めているのですか。",
-    executive: "教育次長",
-    answer: "避難所の指定と、夏の室温が高い学校を優先して順番を決めています。",
+    member: "A",
+    question:
+      "学校体育館の空調整備について、今後の進捗見通しを教えてください。",
+    executive: "教育委員会事務局",
+    answer:
+      "避難所指定や施設条件を踏まえて順次工事を進め、早期の環境改善を図ります。",
   },
 ]);
 
-const machiSpeeches = buildSpeeches("例示", [
+const kensetsuSpeeches = buildSpeeches("建設消防防災委員会", [
   {
-    member: "見本",
-    question: "駅前の再開発について、商店街の意見はどのように聞いていますか。",
-    executive: "まちづくり局長",
-    answer: "これまでに説明会を4回開き、出された意見は計画の見直しに反映しています。",
+    member: "D",
+    question:
+      "市営住宅の建替事業に伴い供用終了した住宅の跡地活用はどう検討していますか。",
+    executive: "都市整備局",
+    answer:
+      "地域のまちづくりや防災面の課題も踏まえ、関係部局と連携して利活用方針を検討しています。",
   },
   {
-    member: "仮定",
-    question: "工事中の通行の安全はどう確保しますか。",
-    executive: "まちづくり局長",
-    answer: "歩行者の通路を確保し、通学の時間帯には誘導員を配置します。",
+    member: "E",
+    question:
+      "消防団員の公務災害補償の改定に加え、団員確保の取り組み状況を教えてください。",
+    executive: "消防局",
+    answer:
+      "処遇面の充実とあわせて、地域や事業所への広報活動を通じて幅広い世代への入団促進に取り組んでいます。",
   },
   {
-    member: "例示",
-    question: "公園のトイレの洋式化は進んでいますか。",
-    executive: "まちづくり局長",
-    answer: "今年度は12か所を改修し、洋式化率は68%になる見込みです。",
-  },
-  {
-    member: "見本",
-    question: "残りの公園の改修の見通しを教えてください。",
-    executive: "まちづくり局長",
-    answer: "利用者の多い公園から順に、毎年10か所程度ずつ改修する予定です。",
+    member: "D",
+    question:
+      "生活道路や公園の環境改善予算は、どのような基準で優先順位を決めますか。",
+    executive: "都市整備局",
+    answer:
+      "老朽化の度合いや通学路の安全性、地域からの要望状況を踏まえて優先的に整備します。",
   },
 ]);
 
 // 発言が少ない回（トップの委員会カードの選定から外れることの確認用）
-const kankyoSpeeches = buildSpeeches("仮定", [
+const keizaiSpeeches = buildSpeeches("経済環境企業委員会", [
   {
-    member: "見本",
-    question: "報告について質疑はございませんか。",
-    executive: "環境局長",
+    member: "F",
+    question: "水道・工業用水道事業の報告について質疑はございませんか。",
+    executive: "公営企業局",
     answer: "（質疑なし）",
   },
 ]);
@@ -300,39 +301,45 @@ export const committeeMeetings: CommitteeMeetingInsert[] = [
   {
     committee_name: "文教委員会",
     committee_slug: "bunkyo",
-    meeting_date: "2025-12-05",
-    title: "令和7年12月5日 文教委員会",
-    source_id: "sample-bunkyo-20251205",
-    source_url: "https://www.example.lg.jp/gikai/iinkai/",
+    meeting_date: "2026-09-16",
+    title: "令和8年9月16日 文教委員会",
+    source_id: "amagasaki-bunkyo-20260916",
+    source_url: AMAGASAKI_MINUTES_URL,
     summary:
-      "放課後児童クラブの受け入れ状況と指導員の確保、学校の体育館への空調の設置計画について報告があり、質疑が行われた。",
+      "園田南小学校校舎増築等工事および大庄健康ふれあい体育館新築工事の請負契約、学校体育館の空調整備について審査・質疑が行われた。",
     speeches: bunkyoSpeeches,
-    raw_text: bunkyoSpeeches.map((s) => `○${s.speakerLabel}　${s.text}`).join("\n"),
+    raw_text: bunkyoSpeeches
+      .map((s) => `○${s.speakerLabel}　${s.text}`)
+      .join("\n"),
     publish_status: "published",
   },
   {
-    committee_name: "まちづくり委員会",
-    committee_slug: "machizukuri",
-    meeting_date: "2025-12-08",
-    title: "令和7年12月8日 まちづくり委員会",
-    source_id: "sample-machizukuri-20251208",
-    source_url: "https://www.example.lg.jp/gikai/iinkai/",
+    committee_name: "建設消防防災委員会",
+    committee_slug: "kensetsu-shobo-bosai",
+    meeting_date: "2026-09-17",
+    title: "令和8年9月17日 建設消防防災委員会",
+    source_id: "amagasaki-kensetsu-20260917",
+    source_url: AMAGASAKI_MINUTES_URL,
     summary:
-      "駅前の再開発の進め方と工事中の安全対策、公園のトイレの改修について報告があり、質疑が行われた。",
-    speeches: machiSpeeches,
-    raw_text: machiSpeeches.map((s) => `○${s.speakerLabel}　${s.text}`).join("\n"),
+      "市営住宅・改良住宅条例の一部改正、消防団員等公務災害補償条例の一部改正、生活道路・公園整備の進め方について審査・質疑が行われた。",
+    speeches: kensetsuSpeeches,
+    raw_text: kensetsuSpeeches
+      .map((s) => `○${s.speakerLabel}　${s.text}`)
+      .join("\n"),
     publish_status: "published",
   },
   {
-    committee_name: "環境委員会",
-    committee_slug: "kankyo",
-    meeting_date: "2026-01-20",
-    title: "令和8年1月20日 環境委員会（閉会中）",
-    source_id: "sample-kankyo-20260120",
-    source_url: "https://www.example.lg.jp/gikai/iinkai/",
-    summary: "ごみの収集日程の変更について報告があった。質疑はなかった。",
-    speeches: kankyoSpeeches,
-    raw_text: kankyoSpeeches.map((s) => `○${s.speakerLabel}　${s.text}`).join("\n"),
+    committee_name: "経済環境企業委員会",
+    committee_slug: "keizai-kankyo-kigyo",
+    meeting_date: "2026-09-18",
+    title: "令和8年9月18日 経済環境企業委員会",
+    source_id: "amagasaki-keizai-20260918",
+    source_url: AMAGASAKI_MINUTES_URL,
+    summary: "水道・工業用水道事業に関する所管報告があった。",
+    speeches: keizaiSpeeches,
+    raw_text: keizaiSpeeches
+      .map((s) => `○${s.speakerLabel}　${s.text}`)
+      .join("\n"),
     publish_status: "published",
   },
 ];
@@ -357,8 +364,8 @@ export function withCommitteeIds(
 export function createCommitteeMeetingTopics(
   meetingIds: string[]
 ): CommitteeMeetingTopicInsert[] {
-  const [bunkyo, machi, kankyo] = meetingIds;
-  if (!bunkyo || !machi || !kankyo) {
+  const [bunkyo, kensetsu, keizai] = meetingIds;
+  if (!bunkyo || !kensetsu || !keizai) {
     throw new Error("committee meetings が3件必要です");
   }
 
@@ -366,53 +373,56 @@ export function createCommitteeMeetingTopics(
     {
       meeting_id: bunkyo,
       topic_order: 1,
-      title: "放課後児童クラブ、希望者は全員入れる？",
+      title: "園田南小学校の増築工事、安全対策と教室確保は？",
       summary:
-        "申込みが前年より約200人増えたが、学校の教室を使って全員を受け入れている。",
+        "児童数増加に対応する増築工事について、工事中の安全対策と将来の教室・給食能力の見通しが確認された。",
       discussion_summary:
-        "委員は指導員の確保や夏休みの昼食を質し、局は時給の引き上げと来夏の試行を説明した。",
-      speakers: [{ label: "例示委員" }, { label: "仮定委員" }, { label: "見本委員" }],
-      start_voice_no: 2,
-      end_voice_no: 7,
-    },
-    {
-      meeting_id: bunkyo,
-      topic_order: 2,
-      title: "体育館のエアコン、いつ全部の学校に？",
-      summary: "避難所の役割もあるため、令和9年度までに全校で設置を終える計画。",
-      discussion_summary:
-        "委員は設置の順番を質し、局は避難所の指定と室温の高さで決めていると説明した。",
-      speakers: [{ label: "例示委員" }, { label: "仮定委員" }],
-      start_voice_no: 8,
-      end_voice_no: 11,
-    },
-    {
-      meeting_id: machi,
-      topic_order: 1,
-      title: "駅前の再開発、商店街の声は届いてる？",
-      summary: "説明会を4回開き、出された意見を計画の見直しに反映している。",
-      discussion_summary:
-        "委員は工事中の安全を質し、局は歩行者通路の確保と誘導員の配置を説明した。",
-      speakers: [{ label: "見本委員" }, { label: "仮定委員" }],
+        "委員は登下校時の安全対策や教室数を質し、事務局は動線分離と推計に基づく規模確保を説明した。",
+      speakers: [{ label: "A委員" }, { label: "B委員" }],
       start_voice_no: 2,
       end_voice_no: 5,
     },
     {
-      meeting_id: machi,
+      meeting_id: bunkyo,
       topic_order: 2,
-      title: "公園のトイレ、洋式になる？",
-      summary: "今年度は12か所を改修し、洋式化率は68%になる見込み。",
+      title: "大庄健康ふれあい体育館の地域利用と学校空調は？",
+      summary:
+        "新築体育館の地域利用ルールや、学校体育館への空調整備の進め方が議論された。",
       discussion_summary:
-        "委員は残りの見通しを質し、局は毎年10か所程度ずつ改修すると説明した。",
-      speakers: [{ label: "例示委員" }, { label: "見本委員" }],
+        "委員は地域利用との両立や空調整備の進捗を質し、事務局は計画的な運用整備と順次施工を説明した。",
+      speakers: [{ label: "C委員" }, { label: "A委員" }],
       start_voice_no: 6,
       end_voice_no: 9,
     },
     {
-      meeting_id: kankyo,
+      meeting_id: kensetsu,
       topic_order: 1,
-      title: "ごみの収集日が変わる？",
-      summary: "一部の地区で、来年4月から資源ごみの収集日が変わる。",
+      title: "供用終了した市営住宅の跡地と生活道路整備は？",
+      summary:
+        "建替事業で供用終了した住宅跡地の検討状況と、生活道路・公園整備の優先基準が確認された。",
+      discussion_summary:
+        "委員は跡地活用と整備基準を質し、局は通学路の安全性や老朽化度合いを踏まえて進めると説明した。",
+      speakers: [{ label: "D委員" }],
+      start_voice_no: 2,
+      end_voice_no: 7,
+    },
+    {
+      meeting_id: kensetsu,
+      topic_order: 2,
+      title: "消防団員の処遇改善と担い手確保は？",
+      summary:
+        "公務災害補償条例の改正にあわせ、消防団員の確保策について質疑が行われた。",
+      discussion_summary:
+        "委員は団員確保の取り組みを質し、消防局は処遇充実と地域・事業所向け広報を説明した。",
+      speakers: [{ label: "E委員" }],
+      start_voice_no: 4,
+      end_voice_no: 5,
+    },
+    {
+      meeting_id: keizai,
+      topic_order: 1,
+      title: "水道・工業用水道事業の所管報告",
+      summary: "水道・工業用水道事業の決算・運営状況について報告があった。",
       discussion_summary: null,
       speakers: [],
       start_voice_no: 1,
@@ -422,22 +432,22 @@ export function createCommitteeMeetingTopics(
 }
 
 // ============================================================
-// 首長の記者会見
+// 首長の記者会見（尼崎市公式 市長定例記者会見ページ準拠）
 // ============================================================
 
 export const pressConferences: PressConferenceInsert[] = [
   {
-    slug: "2025-12-10",
-    title: "市長定例記者会見（令和7年12月10日）",
-    held_at: "2025-12-10",
+    slug: "2026-11-20",
+    title: "令和8年11月 市長定例記者会見",
+    held_at: "2026-11-20",
     youtube_url: null,
     status: "published",
   },
   {
-    slug: "2025-11-26",
-    title: "市長定例記者会見（令和7年11月26日）",
-    held_at: "2025-11-26",
-    youtube_url: null,
+    slug: "2026-10-20",
+    title: "令和8年10月 市長定例記者会見",
+    held_at: "2026-10-20",
+    youtube_url: "https://youtu.be/PcMEndTJ70M",
     status: "published",
   },
 ];
@@ -447,7 +457,7 @@ type ItemSeed = Omit<PressConferenceItemInsert, "press_conference_id"> & {
 };
 
 /**
- * pressConferences の順で挿入した ID ごとの発表・質疑（発言つき）
+ * pressConferences の順で挿入した ID ごとの発表・質疑
  */
 export function createPressConferenceItems(
   conferenceIds: string[]
@@ -464,64 +474,57 @@ export function createPressConferenceItems(
         {
           item_type: "announcement",
           order_index: 1,
-          title: "冬休みの子どもの居場所、図書館を夜まで開ける",
+          title: "駅で出会う、採れたての「あまやさい」～冷蔵機能付きあまやさい販売機を設置します！～",
           summary:
-            "冬休み中、市立図書館3館の開館時間を午後8時まで延ばし、学習スペースを設ける。",
+            "市内産農産物「あまやさい」をより身近に購入できるよう、駅周辺に冷蔵機能付きの販売機を設置する。",
           detail: null,
-          material_url: null,
+          material_url:
+            "https://www.city.amagasaki.hyogo.jp/shisei/1001823/1002089/1002091/index.html",
           turns: [
             {
               speaker: "executive",
-              speaker_name: "市長",
+              speaker_name: "松本市長",
               content:
-                "冬休みの間、子どもたちが安心して過ごせる場所を増やすため、図書館3館の開館を午後8時まで延長します。",
+                "採れたての市内産農産物「あまやさい」を日常的に手に取っていただけるよう、冷蔵機能付き販売機を設置します。",
               order_index: 1,
             },
           ],
         },
         {
-          item_type: "qa",
+          item_type: "announcement",
           order_index: 2,
-          title: "延長にかかる費用は？",
-          summary: "人件費などで約300万円。既存の予算の中でまかなう。",
+          title: "シニア就職面接会を開催します ～就職から生きがいづくりまで応援～",
+          summary:
+            "高齢者の多様な社会参加や就労機会の拡大に向け、シニア就職面接会を開催する。",
           detail: null,
-          material_url: null,
+          material_url:
+            "https://www.city.amagasaki.hyogo.jp/shisei/1001823/1002089/1002091/index.html",
           turns: [
             {
-              speaker: "reporter",
-              speaker_name: null,
-              content: "延長にかかる費用はどのくらいですか。",
-              order_index: 1,
-            },
-            {
               speaker: "executive",
-              speaker_name: "市長",
+              speaker_name: "松本市長",
               content:
-                "人件費などで約300万円を見込んでいます。今年度の予算の中でまかないます。",
-              order_index: 2,
+                "就労から地域の生きがいづくりまで、高齢者の多様な社会参加を応援するシニア就職面接会を開催します。",
+              order_index: 1,
             },
           ],
         },
         {
-          item_type: "qa",
+          item_type: "announcement",
           order_index: 3,
-          title: "ほかの施設にも広げる？",
-          summary: "利用状況を見て、来年の夏休みに公民館へ広げるか判断する。",
+          title: "「阪神タイガース2026年優勝報告会」の実施について",
+          summary:
+            "尼崎市にゆかりのある阪神タイガースの2026年優勝報告会の実施概要を発表。",
           detail: null,
-          material_url: null,
+          material_url:
+            "https://www.city.amagasaki.hyogo.jp/shisei/1001823/1002089/1002091/index.html",
           turns: [
             {
-              speaker: "reporter",
-              speaker_name: null,
-              content: "公民館など、ほかの施設にも広げる考えはありますか。",
-              order_index: 1,
-            },
-            {
-              speaker: "secretariat",
-              speaker_name: "生涯学習課長",
+              speaker: "executive",
+              speaker_name: "松本市長",
               content:
-                "今回の利用状況を確かめたうえで、来年の夏休みに公民館へ広げるかを判断します。",
-              order_index: 2,
+                "市民の皆さまとともに喜びを分かち合う「阪神タイガース2026年優勝報告会」を実施します。",
+              order_index: 1,
             },
           ],
         },
@@ -533,17 +536,38 @@ export function createPressConferenceItems(
         {
           item_type: "announcement",
           order_index: 1,
-          title: "防災アプリで避難所の混み具合がわかるように",
+          title: "防災服のリニューアル等の実施について",
           summary:
-            "12月から、市の防災アプリで指定避難所の混雑状況を確認できるようにする。",
+            "災害対応時の視認性・機能性を高めるため、市の防災服をリニューアルする。",
           detail: null,
-          material_url: null,
+          material_url:
+            "https://www.city.amagasaki.hyogo.jp/shisei/1001823/1002089/1002091/index.html",
           turns: [
             {
               speaker: "executive",
-              speaker_name: "市長",
+              speaker_name: "松本市長",
               content:
-                "災害の時に、空いている避難所を選べるよう、防災アプリで混み具合を表示します。",
+                "災害現場での活動性や視認性を高めるため、尼崎市の防災服をリニューアルします。",
+              order_index: 1,
+            },
+          ],
+        },
+        {
+          item_type: "announcement",
+          order_index: 2,
+          title:
+            "第11回尼崎市まちかどチャーミング賞の決定について「市制110周年記念事業」",
+          summary:
+            "市制110周年記念事業として、地域の魅力を高める建築物や活動を表彰する第11回まちかどチャーミング賞を決定。",
+          detail: null,
+          material_url:
+            "https://www.city.amagasaki.hyogo.jp/shisei/1001823/1002089/1002091/index.html",
+          turns: [
+            {
+              speaker: "executive",
+              speaker_name: "松本市長",
+              content:
+                "市制110周年記念事業として実施した第11回尼崎市まちかどチャーミング賞の受賞対象を決定しました。",
               order_index: 1,
             },
           ],

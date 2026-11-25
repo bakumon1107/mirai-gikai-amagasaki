@@ -17,13 +17,13 @@ export const siteConfig = {
    * 独自のサービス名を使う場合はこの形式に限りません。
    * @see FORK_GUIDELINES.md 1. サービス名称
    */
-  siteName: "みらい議会＠サンプル市",
+  siteName: "みらい議会＠尼崎市",
   siteDescription:
-    "サンプル市議会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
+    "尼崎市議会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
   /** 自治体名（例: "サンプル市" / "サンプル県" / "サンプル町"） */
-  cityName: "サンプル市",
+  cityName: "尼崎市",
   /** 議会名（例: "サンプル市議会" / "サンプル県議会"） */
-  councilName: "サンプル市議会",
+  councilName: "尼崎市議会",
   /**
    * 住民の呼称（例: "市民" / "県民" / "区民" / "町民"）
    * UI テキストや AI プロンプトから参照します。
@@ -38,24 +38,25 @@ export const siteConfig = {
   /** 首長の役職名（知事・市長・区長・町長・村長） */
   executiveTitle: "市長",
   /** 首長の氏名（任意。空文字列なら executiveTitle のみを表示） */
-  executiveName: "",
+  executiveName: "松本眞" as string,
   /** 行政の呼称（県政・市政・区政・町政・村政）。テーマ・分類ラベルに使用 */
   governmentTerm: "市政",
-  /** 定例会の通常開催月（市区町村は [3, 6, 9, 12]、都道府県は [2, 6, 9, 12] 等） */
-  regularSessionMonths: [3, 6, 9, 12] as readonly number[],
+  /** 定例会の通常開催月（尼崎市議会は 2・6・9・12 月定例会） */
+  regularSessionMonths: [2, 6, 9, 12] as readonly number[],
   keywords: [
-    "みらい議会＠サンプル市",
+    "みらい議会＠尼崎市",
     "議案",
-    "サンプル市",
-    "市議会",
+    "尼崎市",
+    "尼崎市議会",
     "地方政治",
     "政策",
     "解説",
   ],
-  councilBaseUrl: "https://www.example.lg.jp/",
+  councilBaseUrl: "https://www.city.amagasaki.hyogo.jp/gikai/index.html",
   /** 議案・議決結果の一覧ページ */
-  councilBillsDetailUrl: "https://www.example.lg.jp/gikai/giketsu/",
-  twitterHashtag: "みらい議会サンプル市", // # なし
+  councilBillsDetailUrl:
+    "https://www.city.amagasaki.hyogo.jp/gikai/1001054/1001061.html",
+  twitterHashtag: "みらい議会尼崎市", // # なし
   /**
    * ★ このサイト自身のソースコード公開先リポジトリ URL
    *
@@ -72,7 +73,8 @@ export const siteConfig = {
    * @see FORK_GUIDELINES.md 6. ソースコード公開先へのリンクの表示
    * @see web/src/config/is-placeholder-url.ts 判定ロジック
    */
-  sourceCodeUrl: "" as string,
+  sourceCodeUrl:
+    "https://github.com/bakumon1107/mirai-gikai-amagasaki" as string,
   externalLinks: {
     /** ★ 誤り報告フォーム（本家のフォームを流用せず、自前のものを用意すること） */
     report: "",
@@ -107,11 +109,12 @@ export const siteConfig = {
    */
   operator: {
     /** 運営者名（個人名・団体名） */
-    name: "運営者名" as string,
+    name: "bakumon1107" as string,
     /** 問い合わせ先 URL（SNS アカウント・フォーム等） */
-    contactUrl: "https://example.com/contact" as string,
+    contactUrl:
+      "https://github.com/bakumon1107/mirai-gikai-amagasaki/issues" as string,
     /** 利用規約の準拠法・管轄裁判所（第一審の専属的合意管轄） */
-    jurisdiction: "東京地方裁判所" as string,
+    jurisdiction: "神戸地方裁判所" as string,
     /**
      * 運営者の立場・利益相反の開示文。
      * 空文字列なら表示しません。
@@ -121,7 +124,8 @@ export const siteConfig = {
      * 例: "運営者はサンプル市議会議員（◯◯会派）です。"
      *     "運営者は特定の政党・会派・候補者と関係のない個人です。"
      */
-    disclosure: "" as string,
+    disclosure:
+      "運営者は特定の政党・会派・候補者と関係のない個人です。" as string,
   },
   /**
    * 機能の有効/無効設定（調査結果に合わせてパーツ単位でオン/オフを切り替えられます）
@@ -140,7 +144,7 @@ export const siteConfig = {
     /** 横断検索・テーマから探す */
     search: true as boolean,
     /** AIチャット機能（議案への質問・テキスト選択からの質問）*/
-    aiChat: true as boolean,
+    aiChat: false as boolean,
     /**
      * AIインタビュー機能（議案当事者へのヒアリング）
      *

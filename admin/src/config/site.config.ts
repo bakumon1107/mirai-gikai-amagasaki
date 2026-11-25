@@ -9,19 +9,20 @@
  */
 export const siteConfig = {
   /** 「みらい議会」の名称を使う場合は「みらい議会＠地域名」形式にすること */
-  siteName: "みらい議会＠サンプル市",
+  siteName: "みらい議会＠尼崎市",
   /** 自治体名（例: "サンプル市" / "サンプル県" / "サンプル町"） */
-  cityName: "サンプル市",
+  cityName: "尼崎市",
   /** 議会名（例: "サンプル市議会" / "サンプル県議会"） */
-  councilName: "サンプル市議会",
+  councilName: "尼崎市議会",
   /** 住民の呼称（例: "市民" / "県民" / "区民" / "町民"）。AIプロンプトから参照する */
   residentTerm: "市民",
-  councilBaseUrl: "https://www.example.lg.jp/",
-  councilBillsDetailUrl: "https://www.example.lg.jp/gikai/giketsu/",
+  councilBaseUrl: "https://www.city.amagasaki.hyogo.jp/gikai/index.html",
+  councilBillsDetailUrl:
+    "https://www.city.amagasaki.hyogo.jp/gikai/1001054/1001061.html",
   /**
    * 会派名の例。AI情報収集のプロンプトで、会派名の表記ゆれを吸収するために使う。
    * fork 先の議会で実際に使われている会派名を列挙すること。
    */
   councilFactionExamples:
-    "みらいサンプル市議会、サンプル市自由民主党議員団、サンプル市公明党議員団等",
+    "公明党、蒼風会、日本維新の会、市民グリーンクラブ、青雲の会、尼崎市民ファーストの会、日本共産党議員団等",
 } as const;
