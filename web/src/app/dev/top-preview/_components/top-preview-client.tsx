@@ -1,10 +1,22 @@
 "use client";
 
-import { Check, Copy, Monitor, Smartphone } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Menu,
+  MessageCircle,
+  Monitor,
+  Search,
+  Send,
+  Smartphone,
+} from "lucide-react";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { DesktopNav } from "@/components/layouts/navigation/desktop-nav";
-import { buildMobileNavItems } from "@/components/layouts/navigation/nav-items";
+import {
+  buildMobileNavItems,
+  buildPcNavItems,
+} from "@/components/layouts/navigation/nav-items";
 import { Button } from "@/components/ui/button";
 import { resolveSessionSlots } from "@/features/council-sessions/shared/utils/resolve-session-slot-status";
 import { ArchiveHomeView } from "@/features/top-sections/server/components/archive-home-view";
@@ -192,6 +204,10 @@ export function TopPreviewClient() {
   const mobileNavItems = useMemo(
     () => buildMobileNavItems(features),
     [features]
+  );
+  const pcNavItems = useMemo(
+    () => buildPcNavItems(features, municipality.executiveTitle),
+    [features, municipality.executiveTitle]
   );
 
   const applyPreset = (
@@ -446,103 +462,212 @@ features: {
                   executiveTitle={municipality.executiveTitle}
                 />
               )}
-              <span className="text-xs text-mirai-text-muted">
-                {features.search ? "検索あり" : "検索なし"}
-              </span>
+              <div className="flex items-center gap-2 text-xs text-mirai-text-muted">
+                {features.search ? (
+                  <span className="inline-flex items-center gap-1 text-mirai-text-secondary">
+                    <Search className="size-3.5" />
+                    検索あり
+                  </span>
+                ) : (
+                  <span>検索なし</span>
+                )}
+                {homeLayout === "bills" && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-mirai-surface-grouped px-2 py-0.5 text-mirai-text-secondary">
+                    <Menu className="size-3.5" />
+                    メニュー({pcNavItems.length})
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* 本体 */}
-            {homeLayout === "archive" ? (
-              <div className="py-4">
-                <ArchiveHomeView
-                  currentSession={currentSession}
-                  nextSession={nextSession}
-                  latestConference={SAMPLE_LATEST_CONFERENCE}
-                  recentConferences={SAMPLE_RECENT_CONFERENCES}
-                  inSessionCounts={
-                    sessionState === "in_session"
-                      ? { deliberatingBills: 4, questioners: 12 }
-                      : null
-                  }
-                  today={today}
-                  sessionSlots={sessionSlots}
-                  committeeMeetings={SAMPLE_COMMITTEES}
-                  questions={SAMPLE_QUESTIONS}
-                  questionSessionName="令和8年 6月定例会"
-                  billSummary={
-                    sessionState === "in_session"
-                      ? SAMPLE_BILL_SUMMARY_IN_SESSION
-                      : SAMPLE_BILL_SUMMARY_CLOSED
-                  }
-                  billsSessionSlug={
-                    sessionState === "in_session" ? "r8-09" : "r8-06"
-                  }
-                  isBillSessionInSession={sessionState === "in_session"}
-                  pastSessions={sessions}
-                  pressConferences={SAMPLE_PRESS_CONFERENCES}
-                  cityName={municipality.cityName}
-                  councilName={municipality.councilName}
-                  executiveTitle={municipality.executiveTitle}
-                  governmentTerm={municipality.governmentTerm}
-                  features={features}
-                />
-              </div>
-            ) : (
-              <div className="p-6 flex flex-col gap-6">
-                <div className="rounded-2xl bg-mirai-gradient p-8 text-mirai-text">
-                  <p className="text-xs font-medium text-primary-accent">
-                    議案中心レイアウト（homeLayout: &quot;bills&quot;）
-                  </p>
-                  <p className="mt-2 text-xl font-bold leading-relaxed">
-                    いま{municipality.councilName}で議論されていること
-                    <br />
-                    やさしい言葉で説明します
-                  </p>
-                </div>
-
-                {features.bills ? (
-                  <div className="rounded-2xl bg-white p-5 flex flex-col gap-3">
-                    <div className="flex items-center justify-between gap-2 flex-wrap">
-                      <h2 className="font-bold text-mirai-text">注目の議案</h2>
-                      <span className="rounded-full bg-mirai-surface-grouped px-2.5 py-1 text-xs text-mirai-text-secondary">
-                        会派別賛否:{" "}
-                        {features.showFactionStances
-                          ? "表示する"
-                          : "非表示（可否のみ）"}
-                      </span>
-                    </div>
-                    <div className="grid gap-3 md:grid-cols-2">
-                      <div className="rounded-xl border border-mirai-border p-4">
-                        <span className="text-xs text-primary-accent font-medium">
-                          子育て・教育
-                        </span>
-                        <p className="mt-1 font-bold text-sm text-mirai-text">
-                          学校給食費の無償化に関する条例の一部改正
-                        </p>
-                        <p className="mt-1 text-xs text-mirai-text-secondary">
-                          対象学年を拡大し、保護者の負担を軽減します。
-                        </p>
-                      </div>
-                      <div className="rounded-xl border border-mirai-border p-4">
-                        <span className="text-xs text-primary-accent font-medium">
-                          防災・安全
-                        </span>
-                        <p className="mt-1 font-bold text-sm text-mirai-text">
-                          令和8年度 一般会計補正予算（第2号）
-                        </p>
-                        <p className="mt-1 text-xs text-mirai-text-secondary">
-                          避難所の空調設備と非常用電源の整備費を計上します。
-                        </p>
-                      </div>
-                    </div>
+            {/* 本体（PC幅で AI チャット ON のときは本番同様に右サイドパネルを並べる） */}
+            <div
+              className={cn(
+                "w-full",
+                features.aiChat && viewport === "desktop" && "flex items-start"
+              )}
+            >
+              <div className="flex-1 min-w-0">
+                {homeLayout === "archive" ? (
+                  <div className="py-4">
+                    <ArchiveHomeView
+                      currentSession={currentSession}
+                      nextSession={nextSession}
+                      latestConference={SAMPLE_LATEST_CONFERENCE}
+                      recentConferences={SAMPLE_RECENT_CONFERENCES}
+                      inSessionCounts={
+                        sessionState === "in_session"
+                          ? { deliberatingBills: 4, questioners: 12 }
+                          : null
+                      }
+                      today={today}
+                      sessionSlots={sessionSlots}
+                      committeeMeetings={SAMPLE_COMMITTEES}
+                      questions={SAMPLE_QUESTIONS}
+                      questionSessionName="令和8年 6月定例会"
+                      billSummary={
+                        sessionState === "in_session"
+                          ? SAMPLE_BILL_SUMMARY_IN_SESSION
+                          : SAMPLE_BILL_SUMMARY_CLOSED
+                      }
+                      billsSessionSlug={
+                        sessionState === "in_session" ? "r8-09" : "r8-06"
+                      }
+                      isBillSessionInSession={sessionState === "in_session"}
+                      pastSessions={sessions}
+                      pressConferences={SAMPLE_PRESS_CONFERENCES}
+                      cityName={municipality.cityName}
+                      councilName={municipality.councilName}
+                      executiveTitle={municipality.executiveTitle}
+                      governmentTerm={municipality.governmentTerm}
+                      features={features}
+                    />
                   </div>
                 ) : (
-                  <div className="rounded-2xl border border-dashed border-mirai-border bg-white/60 p-5 text-xs text-mirai-text-secondary">
-                    「議案一覧・詳細（features.bills）」が OFF
-                    のため、議案パーツは非表示になります。議案を出さない自治体では
-                    homeLayout: &quot;archive&quot; をおすすめします。
+                  <div className="max-w-[700px] mx-auto p-6 flex flex-col gap-6">
+                    <div className="rounded-2xl bg-mirai-gradient p-8 text-mirai-text">
+                      <p className="text-xs font-medium text-primary-accent">
+                        議案中心レイアウト（homeLayout: &quot;bills&quot;）
+                      </p>
+                      <p className="mt-2 text-xl font-bold leading-relaxed">
+                        いま{municipality.councilName}で議論されていること
+                        <br />
+                        やさしい言葉で説明します
+                      </p>
+                    </div>
+
+                    {features.bills ? (
+                      <div className="rounded-2xl bg-white p-5 flex flex-col gap-3">
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <h2 className="font-bold text-mirai-text">
+                            注目の議案
+                          </h2>
+                          <span className="rounded-full bg-mirai-surface-grouped px-2.5 py-1 text-xs text-mirai-text-secondary">
+                            会派別賛否:{" "}
+                            {features.showFactionStances
+                              ? "表示する"
+                              : "非表示（可否のみ）"}
+                          </span>
+                        </div>
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="rounded-xl border border-mirai-border p-4">
+                            <span className="text-xs text-primary-accent font-medium">
+                              子育て・教育
+                            </span>
+                            <p className="mt-1 font-bold text-sm text-mirai-text">
+                              学校給食費の無償化に関する条例の一部改正
+                            </p>
+                            <p className="mt-1 text-xs text-mirai-text-secondary">
+                              対象学年を拡大し、保護者の負担を軽減します。
+                            </p>
+                          </div>
+                          <div className="rounded-xl border border-mirai-border p-4">
+                            <span className="text-xs text-primary-accent font-medium">
+                              防災・安全
+                            </span>
+                            <p className="mt-1 font-bold text-sm text-mirai-text">
+                              令和8年度 一般会計補正予算（第2号）
+                            </p>
+                            <p className="mt-1 text-xs text-mirai-text-secondary">
+                              避難所の空調設備と非常用電源の整備費を計上します。
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-2xl border border-dashed border-mirai-border bg-white/60 p-5 text-xs text-mirai-text-secondary">
+                        「議案一覧・詳細（features.bills）」が OFF
+                        のため、議案パーツは非表示になります。議案を出さない自治体では
+                        homeLayout: &quot;archive&quot; をおすすめします。
+                      </div>
+                    )}
+
+                    {/* bills 型でメニュー・フッターに現れるパーツのプレビュー */}
+                    <div className="rounded-2xl border border-mirai-border bg-white p-5 flex flex-col gap-3">
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <h2 className="font-bold text-sm text-mirai-text">
+                          メニューから開ける機能（bills 型の構成）
+                        </h2>
+                        <span className="text-xs text-mirai-text-muted">
+                          ヘッダーメニュー・フッターに反映
+                        </span>
+                      </div>
+                      <p className="text-xs text-mirai-text-secondary">
+                        議案中心レイアウトでは、一般質問・委員会・
+                        {municipality.executiveTitle}
+                        記者会見はトップ本文ではなくヘッダーのメニューやフッターから開く構成になります。
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {pcNavItems.map((item) => (
+                          <span
+                            key={item.href}
+                            className="rounded-full bg-mirai-surface-grouped px-3 py-1 text-xs font-medium text-mirai-text"
+                          >
+                            {item.label}
+                          </span>
+                        ))}
+                        {features.search && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-mirai-surface-grouped px-3 py-1 text-xs font-medium text-mirai-text">
+                            <Search className="size-3" />
+                            横断検索
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 )}
+              </div>
+
+              {/* PC幅の AI チャット右サイドパネルプレビュー */}
+              {features.aiChat && viewport === "desktop" && (
+                <aside className="w-[320px] shrink-0 border-l border-mirai-border bg-white p-4 flex flex-col gap-4 self-stretch">
+                  <div className="flex items-center gap-2 border-b border-mirai-border pb-3">
+                    <span className="inline-flex size-8 items-center justify-center rounded-full bg-mirai-gradient text-mirai-text">
+                      <MessageCircle className="size-4" />
+                    </span>
+                    <div>
+                      <p className="text-xs font-bold text-mirai-text">
+                        AI チャット（PC 右サイド常駐）
+                      </p>
+                      <p className="text-[11px] text-mirai-text-secondary">
+                        features.aiChat: true で表示
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-xs font-bold leading-relaxed text-mirai-text">
+                    議会や議案について、気になることをAIに質問してください。
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <span className="rounded-xl border border-mirai-border bg-mirai-surface px-3 py-2 text-xs text-mirai-text-secondary">
+                      いま注目されている議案は？
+                    </span>
+                    <span className="rounded-xl border border-mirai-border bg-mirai-surface px-3 py-2 text-xs text-mirai-text-secondary">
+                      子育て・教育に関する議論を教えて
+                    </span>
+                  </div>
+                  <div className="mt-auto rounded-full border border-mirai-border bg-mirai-surface px-3.5 py-2 flex items-center justify-between gap-2 text-xs text-mirai-text-muted">
+                    <span>わからないことをAIに質問する</span>
+                    <span className="inline-flex size-7 items-center justify-center rounded-full bg-mirai-gradient text-mirai-text">
+                      <Send className="size-3.5" />
+                    </span>
+                  </div>
+                </aside>
+              )}
+            </div>
+
+            {/* スマホ幅の AI チャットフローティングボタンプレビュー */}
+            {features.aiChat && viewport === "mobile" && (
+              <div className="px-4 py-3 bg-mirai-surface">
+                <div className="rounded-full bg-mirai-gradient p-[2px] shadow-sm">
+                  <div className="rounded-full bg-white px-4 py-2.5 flex items-center justify-between gap-2">
+                    <span className="text-xs font-medium text-mirai-text-secondary">
+                      わからないことをAIに質問する
+                    </span>
+                    <span className="inline-flex size-8 items-center justify-center rounded-full bg-mirai-gradient text-mirai-text">
+                      <MessageCircle className="size-4" />
+                    </span>
+                  </div>
+                </div>
               </div>
             )}
 

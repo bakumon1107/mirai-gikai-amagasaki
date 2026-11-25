@@ -8,20 +8,24 @@ import type { PressConferenceListItem } from "../../shared/types";
 
 type Props = {
   pressConferences: PressConferenceListItem[];
+  executiveTitle?: string;
 };
 
-export function PressConferenceArchiveSection({ pressConferences }: Props) {
+export function PressConferenceArchiveSection({
+  pressConferences,
+  executiveTitle = siteConfig.executiveTitle,
+}: Props) {
   if (pressConferences.length === 0) return null;
 
   const executiveLabel = siteConfig.executiveName
-    ? `${siteConfig.executiveName}${siteConfig.executiveTitle}`
-    : siteConfig.executiveTitle;
+    ? `${siteConfig.executiveName}${executiveTitle}`
+    : executiveTitle;
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <h2 className="text-[22px] font-bold text-mirai-text leading-[1.48]">
-          {siteConfig.executiveTitle}記者会見
+          {executiveTitle}記者会見
         </h2>
         <p className="text-xs text-mirai-text-secondary">
           {executiveLabel}
@@ -51,7 +55,7 @@ export function PressConferenceArchiveSection({ pressConferences }: Props) {
       <div className="flex justify-center">
         <Button variant="outline" size="lg" asChild className="rounded-full">
           <Link href={routes.pressConferences()}>
-            {siteConfig.executiveTitle}記者会見を一覧で表示
+            {executiveTitle}記者会見を一覧で表示
           </Link>
         </Button>
       </div>
