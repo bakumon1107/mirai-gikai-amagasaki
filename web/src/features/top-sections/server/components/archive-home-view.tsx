@@ -1,4 +1,3 @@
-import { Container } from "@/components/layouts/container";
 import { PastSessionsSection } from "@/components/top/past-sessions-section";
 import { siteConfig } from "@/config/site.config";
 import type { BillStatusSummary } from "@/features/bills/shared/utils/summarize-bill-statuses";
@@ -126,24 +125,25 @@ export function ArchiveHomeView({
       )}
 
       {(features.bills || features.generalQuestions) && (
-        <div className="mt-10 bg-mirai-surface-muted py-10">
-          <Container>
+        <div className="mt-10 bg-mirai-surface-muted py-10 pc:mt-12">
+          <div className="mx-4 pc:mx-16">
             <PastSessionsSection
               sessions={pastSessions}
               showBills={features.bills}
               showGeneralQuestions={features.generalQuestions}
             />
-          </Container>
+          </div>
         </div>
       )}
 
       {features.pressConferences && pressConferences.length > 0 && (
         <div className="bg-white py-10">
-          <Container>
+          <div className="mx-4 pc:mx-16">
             <PressConferenceArchiveSection
               pressConferences={pressConferences}
+              executiveTitle={executiveTitle}
             />
-          </Container>
+          </div>
         </div>
       )}
     </>
