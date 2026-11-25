@@ -79,7 +79,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   /** globals.css の --primary と揃えること（FORK_GUIDELINES 4. カラーテーマの変更） */
-  themeColor: "#4f6d8c",
+  themeColor: "#4b3f8f",
 };
 
 export default function RootLayout({

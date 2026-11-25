@@ -1,5 +1,6 @@
 import {
   bills,
+  CURRENT_SESSION_BILL_COUNT,
   tags,
   councilSessions,
   factions,
@@ -148,10 +149,10 @@ async function seedDatabase() {
 
     console.log(`✅ Inserted ${insertedBills.length} bills`);
 
-    // Link first 3 bills to the current council session
+    // Link bills to the current council session (first CURRENT_SESSION_BILL_COUNT bills)
     const currentSessionId = insertedCouncilSessions[0]?.id;
     if (currentSessionId) {
-      const billsToLink = insertedBills.slice(0, 3);
+      const billsToLink = insertedBills.slice(0, CURRENT_SESSION_BILL_COUNT);
       for (const bill of billsToLink) {
         await supabase
           .from("bills")
@@ -163,10 +164,10 @@ async function seedDatabase() {
       );
     }
 
-    // Link last 5 bills to the previous council session
+    // Link remaining bills to the previous council session
     const previousSessionId = insertedCouncilSessions[1]?.id;
     if (previousSessionId) {
-      const previousBills = insertedBills.slice(-5);
+      const previousBills = insertedBills.slice(CURRENT_SESSION_BILL_COUNT);
       for (const bill of previousBills) {
         await supabase
           .from("bills")
@@ -199,15 +200,14 @@ async function seedDatabase() {
 
     console.log(`✅ Inserted ${insertedContents.length} bill contents`);
 
-    // Insert faction_stances (みらい会派の見解)
+    // Insert faction_stances (各会派の賛否)
     console.log("🎯 Inserting faction stances...");
-    const miraiFaction = insertedFactions.find((f) => f.name === "mirai");
     let insertedStancesCount = 0;
 
-    if (miraiFaction) {
+    if (insertedFactions.length > 0) {
       const factionStances = createFactionStances(
         insertedBills,
-        miraiFaction.id
+        insertedFactions
       );
 
       const { data: insertedStances, error: stancesError } = await supabase
